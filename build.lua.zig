@@ -22,8 +22,6 @@ pub fn linkLibLua(
     liblua.link_data_sections = true;
     liblua.link_function_sections = true;
 
-    liblua.root_module.addIncludePath(lua.path("."));
-
     liblua.root_module.addCSourceFiles(.{
         .files = lua_sources,
         .root = lua.path(""),
@@ -36,39 +34,41 @@ pub fn linkLibLua(
 }
 
 const lua_sources = &.{
-    "lauxlib.c",
-    "liolib.c",
+    // core -- used by all
+    "lzio.c",
+    "lctype.c",
     "lopcodes.c",
+    "lmem.c",
+    "lundump.c",
+    "ldump.c",
     "lstate.c",
+    "lgc.c",
+    "llex.c",
+    "lcode.c",
+    "lparser.c",
+    "ldebug.c",
+    "lfunc.c",
     "lobject.c",
+    "ltm.c",
+    "lstring.c",
+    "ltable.c",
+    "ldo.c",
+    "lvm.c",
+    "lapi.c",
+    // auxiliary library -- used by all
+    "lauxlib.c",
+    // standard library  -- not used by luac
+    "lbaselib.c",
+    "lcorolib.c",
+    "ldblib.c",
+    "liolib.c",
     "lmathlib.c",
     "loadlib.c",
-    "lvm.c",
-    "lfunc.c",
-    "lstrlib.c",
-    "lua.c",
-    "linit.c",
-    "lstring.c",
-    "lundump.c",
-    "lctype.c",
-    "ltable.c",
-    "ldump.c",
     "loslib.c",
-    "lgc.c",
-    "lzio.c",
-    "ldblib.c",
-    "lutf8lib.c",
-    "lmem.c",
-    "lcorolib.c",
-    "lcode.c",
+    "lstrlib.c",
     "ltablib.c",
-    "lapi.c",
-    "lbaselib.c",
-    "ldebug.c",
-    "onelua.c",
-    "lparser.c",
-    "llex.c",
-    "ltm.c",
-    "ltests.c",
-    "ldo.c",
+    "lutf8lib.c",
+    "linit.c",
+    // lua
+    "lua.c",
 };
