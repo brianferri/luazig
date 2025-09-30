@@ -1,7 +1,7 @@
 const std = @import("std");
 const linkLibLua = @import("build.lua.zig").linkLibLua;
 
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -39,4 +39,11 @@ pub fn build(b: *std.Build) void {
     run_step.dependOn(&run_cmd.step);
 
     run_cmd.step.dependOn(b.getInstallStep());
-}
+
+    const asm_step = b.step("asm", "Emit assembly file");
+    const awf = b.addWriteFiles();
+    awf.step.dependOn(b.getInstallStep());
+    // Path is relative to the cache dir in which it *would've* been placed in
+    const asm_file_name = try std.fmt.allocPrint(b.allocator, "../../../zig-out/asm/lua.s", .{});
+    _ = awf.addCopyFile(exe.getEmittedAsm(), asm_file_name);
+    asm_step.dependOn(&awf.step);}
