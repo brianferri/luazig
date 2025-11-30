@@ -14,6 +14,7 @@ pub fn linkLibLua(
         .linkage = .static,
         .root_module = b.createModule(.{
             .target = target,
+            .link_libc = true,
             .optimize = optimize,
         }),
     });
