@@ -1,5 +1,5 @@
 const std = @import("std");
-const liblua = @import("liblua");
+const liblua = @import("liblua").c;
 
 fn lua_pcall(L: ?*liblua.lua_State, n: c_int, r: c_int, f: c_int) callconv(.c) c_int {
     return liblua.lua_pcallk(L, n, r, f, @as(c_int, 0), null);

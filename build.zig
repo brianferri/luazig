@@ -19,6 +19,20 @@ pub fn build(b: *std.Build) !void {
     });
     try linkLibLua(b, lua);
 
+    const lib = b.addLibrary(.{
+        .name = "luazig",
+        .linkage = .dynamic,
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .root_source_file = b.path("src/root.zig"),
+            .imports = &.{
+                .{ .name = "lua", .module = liblua },
+            },
+        }),
+    });
+    b.installArtifact(lib);
+
     const exe = b.addExecutable(.{
         .name = "luazig",
         .root_module = b.createModule(.{
@@ -26,11 +40,10 @@ pub fn build(b: *std.Build) !void {
             .target = target,
             .optimize = optimize,
             .imports = &.{
-                .{ .name = "liblua", .module = liblua },
+                .{ .name = "liblua", .module = lib.root_module },
             },
         }),
     });
-
     b.installArtifact(exe);
 
     const run_step = b.step("run", "Run the app");
@@ -46,4 +59,5 @@ pub fn build(b: *std.Build) !void {
     // Path is relative to the cache dir in which it *would've* been placed in
     const asm_file_name = try std.fmt.allocPrint(b.allocator, "../../../zig-out/asm/lua.s", .{});
     _ = awf.addCopyFile(exe.getEmittedAsm(), asm_file_name);
-    asm_step.dependOn(&awf.step);}
+    asm_step.dependOn(&awf.step);
+}
