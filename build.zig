@@ -22,7 +22,7 @@ pub fn build(b: *std.Build) !void {
     const lib = b.addLibrary(.{
         .name = "luazig",
         .linkage = .dynamic,
-        .root_module = b.createModule(.{
+        .root_module = b.addModule("luazig", .{
             .target = target,
             .optimize = optimize,
             .root_source_file = b.path("src/root.zig"),
